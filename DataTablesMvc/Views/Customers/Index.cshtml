@@ -1,0 +1,125 @@
+﻿@model IEnumerable<DataTablesMvc.Models.Customers>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="panel panel-widget forms-panel">
+    <div class="forms">
+        <div class="form-grids widget-shadow">
+            <div class="form-title">
+                <h4>Customers</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<p>
+        <a href="@Url.Action("Create", "Customers")" class="btn btn-success"><span>Create New</span></a>
+    </p>*@
+
+<table id="tbCustomers" class="display compact" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Login)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CountryID)
+            </th>
+        </tr>
+    </thead>   
+</table>
+
+<div class="clearfix"></div>
+
+<style>
+    .dataTables_filter {
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_length {
+        margin-top: 12px;
+        margin-left: 50px;
+        float: right;
+    }
+</style>
+
+@section scripts {
+
+    <script type="text/javascript">
+
+
+        var oTable;
+
+        $(document).ready(function () {
+
+            $('#tbCustomers thead tr').clone(true).appendTo('#tbCustomers thead');
+            $('#tbCustomers thead tr:eq(1) th').each(function (i) {
+
+                $(this).html('<input type=\"text\" class=\"form-control\" />');
+
+                $('input', this).on('keyup change', function () {
+                    if (oTable.column(i).search() !== this.value) {
+                        oTable
+                            .column(i)
+                            .search(this.value)
+                            .draw();
+                    }
+                });
+            });
+
+            oTable = $("#tbCustomers").DataTable({
+
+                destroy: true,
+                orderCellsTop: true,
+                fixedHeader: true,
+                //bFilter: false,
+                responsive: true,
+
+                "dom": '<"top"f>rt<"bottom"ilp><"clear">',
+
+                //"sDom": 'Rlfrtlip',
+
+                //"oLanguage": {
+                //    "sSearch": "Search all columns:"
+                //},
+
+                "ajax": {
+                    "url": "/Customers/GetData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "CustomerID" },
+                    { "data": "CustomerName" },
+                    { "data": "Address" },
+                    { "data": "Login" },
+                    { "data": "Password" },
+                    { "data": "Email" },
+                    { "data": "CountryID" }
+                ]
+            });
+        });
+
+    </script>
+
+}
+
+
+
