@@ -22,9 +22,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CustomerID)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.CustomerName)
             </th>
             <th>
@@ -42,8 +39,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.CountryID)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerID)
+            </th>
         </tr>
-    </thead>   
+    </thead>
 </table>
 
 <div class="clearfix"></div>
@@ -64,8 +64,8 @@
 
     <script type="text/javascript">
 
+        var popUp, dataTable;
 
-        var oTable;
 
         $(document).ready(function () {
 
@@ -75,8 +75,8 @@
                 $(this).html('<input type=\"text\" class=\"form-control\" />');
 
                 $('input', this).on('keyup change', function () {
-                    if (oTable.column(i).search() !== this.value) {
-                        oTable
+                    if (dataTable.column(i).search() !== this.value) {
+                        dataTable
                             .column(i)
                             .search(this.value)
                             .draw();
@@ -84,7 +84,7 @@
                 });
             });
 
-            oTable = $("#tbCustomers").DataTable({
+            dataTable = $("#tbCustomers").DataTable({
 
                 destroy: true,
                 orderCellsTop: true,
@@ -106,16 +106,40 @@
                     "datatype": "json"
                 },
                 "columns": [
-                    { "data": "CustomerID" },
                     { "data": "CustomerName" },
                     { "data": "Address" },
                     { "data": "Login" },
                     { "data": "Password" },
                     { "data": "Email" },
-                    { "data": "CountryID" }
-                ]
+                    { "data": "CountryID" },
+                    {
+                        "data": "CustomerID", "render": function (data) {
+                            return "<a class='btn btn-primary btn-sm' onclick=PopupForm('@Url.Action("AddOrEdit", "Customers")/" + data + "')>Edit</a><a class='btn btn-info btn-sm' style='margin-left:5px' onclick=View(" + data + ")>View</a><a class='btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete(" + data + ")>Delete</a>";
+                        },
+                    }
+                ],
             });
         });
+
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    Popup = formDiv.dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        title: 'Fill Employee Details',
+                        height: 500,
+                        width: 700,
+                        close: function () {
+                            Popup.dialog('destroy').remove();
+                        }
+
+                    });
+                });
+        }
 
     </script>
 

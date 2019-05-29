@@ -1,8 +1,6 @@
 ﻿using DataTablesMvc.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace DataTablesMvc.Controllers
@@ -23,6 +21,17 @@ namespace DataTablesMvc.Controllers
             List<Customers> lstCustomers = db.Customers.ToList<Customers>();
 
             return Json(new { data = lstCustomers }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult AddOrEdit(int id = 0)
+        {
+            if (id == 0)
+                return View(new Customers());
+            else
+            {
+                return View(db.Customers.Where(x => x.CustomerID == id).FirstOrDefault<Customers>());
+            }
         }
     }
 }
